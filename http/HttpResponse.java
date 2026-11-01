@@ -1,3 +1,5 @@
+package http;
+
 import java.util.*;
 public class HttpResponse {
     private final String httpVersion;

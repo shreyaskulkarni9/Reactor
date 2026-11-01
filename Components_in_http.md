@@ -101,3 +101,14 @@ In HTTP server
 release means close() and shutdown()
 - it means after accepting the client and completing request we have to close the allocated request use try block to AutoClose
 
+## character encoding
+
+- it is set of rules that determine how chars is converted into bytes and how bytes are converted to chars.
+
+## UTF-8
+
+- it is standard encoding technique used to convert string into bytes and is used in body if format is json 
+
+## ISO_8859_1
+
+- it is also used to convert raw byte into a strings and it is used in headers 
