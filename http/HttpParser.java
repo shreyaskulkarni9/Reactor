@@ -146,18 +146,4 @@ public class HttpParser
             }
         }
     }
-    public static void main(String[] args) throws Exception {
-        HttpParser parser = new HttpParser();
-
-        String headers =
-                "Host: example.com\r\n" +
-                "X-Test: first\r\n" +
-                "x-test: second";
-
-        parser.completeHeaders = headers;
-
-        parser.parseHeaders();
-
-        System.out.println(parser.completeHeadersMap);
-    }
 }
