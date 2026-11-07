@@ -11,3 +11,6 @@ out/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+#Test Files
+Test.java

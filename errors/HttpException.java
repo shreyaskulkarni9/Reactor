@@ -1,8 +1,14 @@
 package errors;
 public class HttpException extends Exception 
 {
-    public HttpException(String message)
+    private int statusCode;
+    public HttpException(String message,int statusCode)
     {
         super(message);
+        this.statusCode = statusCode;
+    }
+    public int getStatusCode()
+    {
+        return statusCode;
     }
 }
