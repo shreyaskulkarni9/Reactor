@@ -310,4 +310,24 @@ public class HttpParser
             );
         }
     }
+    public String getMethod()
+    { 
+        return method;
+    }
+    public String getVersion()
+    {
+        return version;
+    }
+    public String getTarget()
+    {
+        return target;
+    }
+    public Map<String, List<String>> getHeaders() {
+        Map<String, List<String>> copy = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry :completeHeadersMap.entrySet())
+        {
+            copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
+        return copy;
+    }
 }

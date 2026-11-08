@@ -1,9 +1,13 @@
 package server;
 import errors.*;
-import http.ConnectionBuffer;
-import http.HttpParser;
+
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import http.*;
 public class HttpServer {
     public ServerSocket serverSocket;
     private volatile boolean running = false;
@@ -62,7 +66,24 @@ public class HttpServer {
                 parser.validateMessageFraming();
                 int contentLength = parser.getContentLength();
                 byte[] body = connectionBuffer.readBody(headerEnd, input, contentLength);
-
+                HttpRequest request = new HttpRequest(parser.getMethod(),parser.getVersion(),parser.getTarget(),body,parser.getHeaders());
+                byte[] responseBody = "Request received!".getBytes(StandardCharsets.UTF_8);
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "text/plain; charset=utf-8");
+                headers.put("Content-Length", String.valueOf(responseBody.length));
+                headers.put("Connection", "close");
+                HttpResponse response = new HttpResponse(
+                    "HTTP/1.1",
+                    200,
+                    "OK",
+                    headers,
+                    responseBody
+                );
+                ResponseWriter writer = new ResponseWriter();
+                byte[] responseBytes = writer.serialize(response);
+                OutputStream output = server.getOutputStream();
+                output.write(responseBytes);
+                output.flush();
             }
             catch(HttpException e)
             {
@@ -89,7 +110,6 @@ public class HttpServer {
         }
     }
     private void sendErrorResponse(Socket server, int statusCode) throws IOException {
-
         String reasonPhrase;
 
         switch (statusCode) {
@@ -107,20 +127,24 @@ public class HttpServer {
                 reasonPhrase = "Internal Server Error";
         }
 
-        String responseBody = reasonPhrase + "\n";
-        byte[] bodyBytes = responseBody.getBytes("UTF-8");
+        byte[] body = (reasonPhrase + "\n").getBytes(StandardCharsets.UTF_8);
 
-        String responseHeaders =
-                "HTTP/1.1 " + statusCode + " " + reasonPhrase + "\r\n" +
-                "Content-Type: text/plain; charset=utf-8\r\n" +
-                "Content-Length: " + bodyBytes.length + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "text/plain; charset=utf-8");
+        headers.put("Content-Length", String.valueOf(body.length));
+        headers.put("Connection", "close");
 
+        HttpResponse response = new HttpResponse(
+            "HTTP/1.1",
+            statusCode,
+            reasonPhrase,
+            headers,
+            body
+        );
+        ResponseWriter writer = new ResponseWriter();
+        byte[] responseBytes = writer.serialize(response);
         OutputStream output = server.getOutputStream();
-
-        output.write(responseHeaders.getBytes("ISO-8859-1"));
-        output.write(bodyBytes);
+        output.write(responseBytes);
         output.flush();
     }
 }

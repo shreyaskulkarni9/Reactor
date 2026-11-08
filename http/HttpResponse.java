@@ -3,11 +3,11 @@ package http;
 import java.util.*;
 public class HttpResponse {
     private final String httpVersion;
-    private final String statusCode;
+    private final int statusCode;
     private final String reasonPhrase;
     private final Map<String,String> httpHeaders;
     private final byte[] httpBody;
-    public HttpResponse(String httpVersion,String statusCode,String reasonPhrase,Map<String,String> httpHeaders,byte[] httpBody) {
+    public HttpResponse(String httpVersion,int statusCode,String reasonPhrase,Map<String,String> httpHeaders,byte[] httpBody) {
         this.httpVersion = httpVersion;
         this.statusCode = statusCode;
         this.reasonPhrase = reasonPhrase;
@@ -18,7 +18,7 @@ public class HttpResponse {
     {
         return httpVersion;
     }
-    public String getStatusCode()
+    public int getStatusCode()
     {
         return statusCode;
     }
